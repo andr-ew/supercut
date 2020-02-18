@@ -246,6 +246,8 @@ supercut.init = function(vce, iio)
   supercut.loop(vce, 1)
   -- supercut.fade_time(i, 0.1)
   supercut.loop_position(vce, 0)
+  supercut.level(vce, 1)
+  supercut.pan(vce, 0)
 end
 
 supercut.rate = function(voice, val) 
