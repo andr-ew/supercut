@@ -242,6 +242,8 @@ end
 supercut.init = function(vce, iio)
   supercut.io(vce, iio)
   supercut.enable(vce, 1)
+  supercut.level_input_cut(1, vce, 1)
+  supercut.level_input_cut(2, vce, 1)
   supercut.rate(vce, 1)
   supercut.loop(vce, 1)
   -- supercut.fade_time(i, 0.1)
@@ -374,20 +376,20 @@ end
 supercut.loop_start = function(voice, val)
   if val == nil then return supercut_data[voice].loop_start end
   
-  supercut_data[voice].loop_start = val 
+  supercut_data[voice].loop_start = (val > 0) and util.clamp(0, supercut_data[voice].region_length, val) or 0
   update_loop_points(voice)
 end
 supercut.loop_end = function(voice, val)
   if val == nil then return supercut_data[voice].loop_end end
   
-  supercut_data[voice].loop_end = val
+  supercut_data[voice].loop_end = (val > 0) and util.clamp(0, supercut_data[voice].region_length, val) or 0
   supercut_data[voice].loop_length = supercut_data[voice].loop_end - supercut_data[voice].loop_start
   update_loop_points(voice)
 end
 supercut.loop_length = function(voice, val)
   if val == nil then return supercut_data[voice].loop_length end
   
-  supercut_data[voice].loop_length = val
+  supercut_data[voice].loop_length = (val > 0) and util.clamp(0, supercut_data[voice].region_length, val) or 0
   supercut_data[voice].loop_end = supercut_data[voice].loop_start + val
   
   update_loop_points(voice)
@@ -449,10 +451,8 @@ supercut.level_input_cut = function(ch, voice, amp, subvoice)
   if amp == nil then return supercut_data[voice].level_input_cut[ch][subvoice] end
   
   if subvoice == nil then
-    for i,v in ipairs(supercut_data[voice].subvoices) do
-      supercut_data[voice].level_input_cut[ch][i] = amp
-      softcut.level_input_cut(ch, v, amp)
-    end
+    supercut_data[voice].level_input_cut[ch][util.clamp(1, #supercut_data[voice].subvoices, ch)] = amp
+    softcut.level_input_cut(ch, supercut_data[voice].subvoices[util.clamp(1, #supercut_data[voice].subvoices, ch)], amp)
   else
     supercut_data[voice].level_input_cut[ch][subvoice] = amp
     softcut.level_input_cut(ch, supercut_data[voice].subvoices[subvoice], amp)
