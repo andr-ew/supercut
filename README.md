@@ -1,6 +1,6 @@
-# supercut
+# guide
 
-supercut is a wrapper utility for softcut which is particularly useful for managing common inter-voice relationships and statuses. commands are issued to supercut much the same as with softcut
+supercut is a wrapper utility for softcut which is particularly useful for managing common inter-voice relationships and statuses. commands are issued to supercut much the same as with softcut:
 
 `supercut.play(1, 1)`
 
@@ -35,4 +35,22 @@ to toggle recording:
 
 in the REPL at the bottom, calling `supercut.status(1)` will yield immediate insight into the full status of a supervoice. some of these will look familiar from [softcut docs](http://norns.local/doc/modules/softcut.html) but a few are new. the biggest additions afford some handy buffer management options.
 
-there are 3 levels of specificity, `loop`, `region`, and `home_region`. within each supervoice, `position`, `loop_start`, and `loop_end` begin at 0, and are bound to `region`. `region`s default to a ~116 second sections of softcut's 2 buffers
+there are 3 levels of specificity, `loop`, `region`, and `home_region`. within each supervoice, `loop_start` and `loop_end` begin at 0 and are bound to `region`. `regions` default to a ~116 second sections of softcut's 2 buffers. by default these regions manage thier own territories, but an interesting way to interrupt this is stealing the region of another supervoice:
+
+`supercut.region_start(1, supercut.region_start(2))`
+`supercut.region_end(1, supercut.region_end(2))`
+`supercut.buffer(1, supercut.buffer(2))`
+
+there's even a helper funtion for this:
+
+`supercut.steal_voice_region(1, 2)`
+
+now you can, for example, record to a region at rate = 1 and play back at rate = 2 for a live pitch shift effect
+
+but how do we go back ? that's what `home_region` is for. just run this:
+
+`supercut.steal_home_region(1, 1)`
+
+in addition to `position`, supercut also adds `loop_position`, `region_position`, and `home_region_position` to track tapeheads in each relative sector. they're also updated automatically at the `phase_quant` time.
+
+for a complete, interactive example, check out `demo/linked` !
