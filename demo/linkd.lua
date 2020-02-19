@@ -19,7 +19,7 @@ function init()
   
   audio.level_adc_cut(1)
   
-  supercut.init(1, "stereo") ------ test for mono capability !!
+  supercut.init(1, "stereo")
   supercut.init(2, "stereo")
   
   for i = 1,2 do
