@@ -212,8 +212,6 @@ local function delegate()
     supercut_data[i].subvoices = {}
   end
   
-  -- print("-delegate-")
-  
   for i,v in ipairs(supercut_data) do
     v.buffer = {}
     
@@ -224,8 +222,6 @@ local function delegate()
       
       table.insert(v.buffer, home[w].buffer)
     end
-    
-    -- print("-")
   end
 end
 
@@ -250,6 +246,7 @@ supercut.init = function(vce, iio)
   supercut.loop_position(vce, 0)
   supercut.level(vce, 1)
   supercut.pan(vce, 0)
+  supercut.rec_level(vce, 1)
 end
 
 supercut.rate = function(voice, val) 
@@ -295,8 +292,8 @@ supercut.pan = function(voice, val)
   supercut_data[voice].pan = val
   
   if supercut_data[voice].io == "mono" then
-    if supercut_data[i].subvoices[1] ~= nil then 
-      softcut.pan(supercut_data[i].subvoices[1], val)
+    if supercut_data[voice].subvoices[1] ~= nil then 
+      softcut.pan(supercut_data[voice].subvoices[1], val)
     end
   else
     softcut.pan(supercut_data[voice].subvoices[1], -1)
@@ -313,8 +310,8 @@ supercut.level = function(voice, val)
   supercut_data[voice].level = val
   
   if supercut_data[voice].io == "mono" then
-    if supercut_data[i].subvoices[1] ~= nil then 
-      softcut.level(supercut_data[i].subvoices[1], val)
+    if supercut_data[voice].subvoices[1] ~= nil then 
+      softcut.level(supercut_data[voice].subvoices[1], val)
     end
   else
     local p = supercut_data[voice].pan
@@ -395,9 +392,21 @@ supercut.loop_length = function(voice, val)
   update_loop_points(voice)
 end
 
+supercut.buffer = function(voice, val) 
+  if type(val) ~= "table" then val = { val } end
+  
+  for i,v in ipairs(supercut_data[voice].buffer) do
+    if val[i] ~= nil then
+      supercut_data[voice].buffer[i] = val[i]
+      softcut.buffer(supercut_data[voice].subvoices[i], val[i])
+    end
+  end
+end
+
 supercut.steal_voice_home_region = function(voice, dst)
   supercut.region_start(voice, supercut_data[dst].home_region_start)
   supercut.region_end(voice, supercut_data[dst].home_region_end)
+  supercut.buffer(voice, supercut_data[dst].home_buffer)
   
   update_loop_points(voice)
 end
@@ -405,6 +414,8 @@ end
 supercut.steal_voice_region = function(voice, dst)
   supercut.region_start(voice, supercut_data[dst].region_start)
   supercut.region_end(voice, supercut_data[dst].region_end)
+  supercut.buffer(voice, supercut_data[dst].buffer)
+  
   
   update_loop_points(voice)
 end
@@ -495,8 +506,6 @@ supercut.level_cut_cut = function(voice, dst, amp, subvoice, dst_subvoice)
     softcut.level_cut_cut(supercut_data[voice].subvoices[subvoice], supercut_data[dst].subvoices[dst_subvoice], amp)
   end
 end
-
-supercut.buffer = function(...) print("supercut doesn't steal this function!") end
 
 supercut.buffer_clear_region = function(voice, ...)
   if arg == nil then

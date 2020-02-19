@@ -19,7 +19,7 @@ function init()
   
   audio.level_adc_cut(1)
   
-  supercut.init(1, "stereo")
+  supercut.init(1, "stereo") ------ test for mono capability !!
   supercut.init(2, "stereo")
   
   for i = 1,2 do
@@ -85,9 +85,10 @@ end
 function redraw()
   screen.clear()
   
+  local top = 32
+  
   for i = 1,2 do
     local left = 2 + (i-1) * 58
-    local top = 34
     local width = 22
     
     screen.level(2)
@@ -98,7 +99,17 @@ function redraw()
     screen.level(16)
     screen.pixel(left + (width + 1) * supercut.region_position(i) / supercut.region_length(i), top) -- loop point
     screen.fill()
+    
+    if linked then -- link indicator
+      screen.level(16)
+      screen.pixel(40, 34)
+      screen.fill()
+    end
   end
+  
+  screen.level(12)
+  screen.pixel(102, top - math.abs(supercut.rate(2))) -- rate
+  screen.fill()
   
   screen.update()
 end
