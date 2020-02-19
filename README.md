@@ -35,7 +35,7 @@ to toggle recording:
 
 in the REPL at the bottom, calling `supercut.status(1)` will yield immediate insight into the full status of a supervoice. some of these will look familiar from [softcut docs](http://norns.local/doc/modules/softcut.html) but a few are new. the biggest additions afford some handy buffer management options.
 
-there are 3 levels of specificity, `loop`, `region`, and `home_region`. within each supervoice, `loop_start` and `loop_end` begin at 0 and are bound to `region`. `regions` default to a ~116 second sections of softcut's 2 buffers. by default these regions manage thier own territories, but an interesting way to interrupt this is stealing the region of another supervoice:
+there are 3 levels of specificity: `loop`, `region`, and `home_region`. within each supervoice, `loop_start` and `loop_end` begin at 0 and are bound to `region`. `regions` default to a ~116 second sections of softcut's 2 buffers. by default these regions manage thier own territories, but an interesting way to interrupt this is stealing the region of another supervoice:
 
 `supercut.region_start(1, supercut.region_start(2))`
 `supercut.region_end(1, supercut.region_end(2))`
