@@ -53,4 +53,4 @@ but how do we go back ? that's what `home_region` is for. just run this:
 
 in addition to `position`, supercut also adds `loop_position`, `region_position`, and `home_region_position` to track tapeheads in each relative sector. they're also updated automatically at the `phase_quant` time.
 
-for a complete, interactive example, check out `demo/linked` !
+for a complete, interactive example, check out `demo/linked` from the video above !
